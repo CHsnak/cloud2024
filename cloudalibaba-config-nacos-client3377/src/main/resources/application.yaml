@@ -1,0 +1,11 @@
+server:
+  port: 3377
+
+spring:
+  profiles:
+    # or prod,or test
+    active: dev
+
+# nacos端配置文件DataId的命名规则是：
+# ${spring.application.name}-${spring.profile.active}.${spring.cloud.nacos.config.file-extension}
+# 本案例的DataID是:nacos-config-client-dev.yaml

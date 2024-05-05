@@ -1,0 +1,68 @@
+server:
+  port: 9527
+
+spring:
+  application:
+    name: cloud-gateway
+  cloud:
+    consul:
+      discovery:
+        prefer-ip-address: true
+        service-name: ${spring.application.name}
+      host: localhost
+      port: 8500
+    gateway:
+      routes:
+        - id: pay_routh1 #pay_routh1                #路由的ID(类似mysql主键ID)，没有固定规则但要求唯一，建议配合服务名
+#          uri: http://localhost:8001                #匹配后提供服务的路由地址
+          uri: lb://cloud-payment-service
+          predicates:
+            - Path=/pay/gateway/get/**              # 断言，路径相匹配的进行路由
+            - After=2024-04-27T17:28:20.877411800+08:00[Asia/Shanghai]
+            #- Before=2024-04-27T17:30:20.877411800+08:00[Asia/Shanghai]
+            #- Between=2024-04-27T17:26:54.877411800+08:00[Asia/Shanghai],2024-04-27T17:28:54.877411800+08:00[Asia/Shanghai]
+            #- Cookie=num,[1-9]{3}
+            #- Header=X-Request-Id, \d+
+            #- Host=**.atguigu.com, www.thatcc.com #请求头中有个Host属性，值匹配后面的Ant风格的URL
+            # - Query=keyword #必须带有名为keyword的参数
+            - Xxx=diamond
+#            - name: Xxx
+#              args:
+#                userType: diamond
+
+        - id: pay_routh2 #pay_routh2                #路由的ID(类似mysql主键ID)，没有固定规则但要求唯一，建议配合服务名
+#          uri: http://localhost:8001                #匹配后提供服务的路由地址
+          uri: lb://cloud-payment-service
+          predicates:
+            - Path=/pay/gateway/info/**              # 断言，路径相匹配的进行路由
+
+        - id: pay_routh3 #pay_routh2                #路由的ID(类似mysql主键ID)，没有固定规则但要求唯一，建议配合服务名
+          uri: lb://cloud-payment-service
+          predicates:
+            - Path=/pay/gateway/filter/**              # 断言，路径相匹配的进行路由
+            # - Path=/gateway/filter/**
+            # - Path=/xxx/yyy/{aaa}
+#          filters:
+#            # 操作请求头
+#            - AddRequestHeader=X-Request-xx1,Value-xx1
+#            - AddRequestHeader=X-Request-yy2,Value-yy2
+#            - RemoveRequestHeader=sec-fetch-site
+#            # 操作请求参数
+#            - SetRequestHeader=sec-fetch-user,BLueBlue-www
+#            - AddRequestParameter=userId,33
+#            - RemoveRequestParameter=userName
+            # 操作响应头
+            # - AddResponseHeader=CC-Header,HHH
+            # - RemoveResponseHeader=Content-Type
+            # - SetResponseHeader=Etag,emm..
+            #
+            # - PrefixPath=/pay
+            # - SetPath=/pay/gateway/{aaa}
+            # - RedirectTo=302,https://www.atguigu.com/
+          filters:
+#            - name: ContainParameter
+#              args:
+#                paramName: cc
+            - ContainParameter=cl
+#      default-filters:
+#        - AddRequestHeader=GlobalHeader,Hhhh
